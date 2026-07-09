@@ -1,10 +1,25 @@
 import requests # permite acessar sites e APIs (fazer requests)
 
+from app.cache.memory_cache import MemoryCache
+from app.config import CACHE_TTL
+
 class WeatherService:
     GEO_URL = "https://geocoding-api.open-meteo.com/v1/search" # coordenadas
     WEATHER_URL = "https://api.open-meteo.com/v1/forecast" # buscar o clima
 
+    cache = MemoryCache()
+
     def get_weather(self, city: str): # permite usar as funções internas da classe/ espera receber
+
+        key = city.lower()
+
+        cached = self.cache.get(key)
+
+        if cached:
+            print("Resposta veio do CACHE :)")
+            return cached
+        
+        print("Resposta veio da API :o")
 
         geo = requests.get(
             self.GEO_URL, # permite com que o programa encontre var globais

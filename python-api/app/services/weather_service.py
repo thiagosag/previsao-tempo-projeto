@@ -1,5 +1,6 @@
 import requests # permite acessar sites e APIs (fazer requests)
 
+from app.models.weather_response import WeatherResponse # modelo WeatherResponse
 from app.cache.memory_cache import MemoryCache 
 from app.config import CACHE_TTL # varíavel que guarda os 600 segundos em config.py
 
@@ -10,7 +11,8 @@ class WeatherService:
 
     cache = MemoryCache()
 
-    def get_weather(self, city): # permite usar as funções internas da classe/ espera receber
+    def get_weather(self, city) -> WeatherResponse: # self - permite usar as funções internas da classe/ espera receber
+        # -> WeatherResponse: a seguir serão utilizadas os tipos declarados em WeatherResponse.
 
         key = city.lower().strip() # chave digitada -> cidade transformada em minúsculo e sem espaços extras (início e fim)
 
@@ -31,8 +33,7 @@ class WeatherService:
             params={
                 "name": city,
                 "count": 1 # devolve apenas 1 resultado (a cidade digitada)
-            },
-            timeout=5 # evita travamento
+            }
         )
 
         geo.raise_for_status() # método para verificar status da api geo
@@ -54,22 +55,32 @@ class WeatherService:
                 "latitude": latitude,
                 "longitude": longitude,
                 "current": "temperature_2m,relative_humidity_2m,wind_speed_10m" # dados atuais
-            },
-            timeout=5 # evita travamentos
+            }
         )
 
         weather.raise_for_status() # status da api weather
 
         current = weather.json()["current"] # resposta -> dicionário; extrai apenas a parte "current" que contém o clima atual.
 
-        result = {
-            "city": place["name"], # traz o resultado obtido na var place, o nome da cidade é salvo em city, no dicionário result
-            "country": place["country"],
-            "temperature": current["temperature_2m"], # traz o resultado atual de temperatura, humidade e vento
-            "humidity": current["relative_humidity_2m"],
-            "wind": current["wind_speed_10m"]
-        }
-    
+        result = WeatherResponse(
+            city=place["name"],
+            country=place["country"],
+            temperature=current["temperature_2m"],
+            humidity=current["relative_humidity_2m"],
+            wind=current["wind_speed_10m"]
+        )
+
+        """ 
+        VERSÃO SEM O MODEL - weather_response
+                result = {
+                    "city": place["name"], # traz o resultado obtido na var place, o nome da cidade é salvo em city, no dicionário result
+                    "country": place["country"],
+                    "temperature": current["temperature_2m"], # traz o resultado atual de temperatura, humidade e vento
+                    "humidity": current["relative_humidity_2m"],
+                    "wind": current["wind_speed_10m"]
+                }
+        """  
+
         self.cache.set( # define/salva na memória, no cache para futuras requisições
             key, # nome da cidade
             result, # resultado obtido pela api

@@ -3,10 +3,14 @@ from .services.weather_service import WeatherService # importa dentro da pasta s
 
 from app.models.weather_response import WeatherResponse
 
+from .gateways.weather_gateway import WeatherGateway
+
 app = FastAPI() # cria a instância app (que mostra pro server quais rotas existem)
 # instância é um objeto criado a partir de uma classe (molde de atributos e métodos)
 
-service = WeatherService() # instância do serviço de clima para usar suas funções dentro das rotas.
+gateway = WeatherGateway()
+service = WeatherService(gateway=gateway)
+
 
 @app.get( # @ -> decorador -> use a função abaixo a partir das funcionalidades de app 
         "/weather",

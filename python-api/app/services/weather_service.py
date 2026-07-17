@@ -12,7 +12,7 @@ class WeatherService:
         self.geteway = WeatherGateway()
         self.cache = MemoryCache()
 
-    def get_weather(self, city) -> WeatherResponse: # self - permite usar as funções internas da classe/ espera receber
+    def get_weather(self, city) -> WeatherResponse: # self - permite usar as funções da classe/ espera receber
         # -> WeatherResponse: a seguir serão utilizadas os tipos declarados em WeatherResponse.
 
         key = city.lower().strip() # chave digitada -> cidade transformada em minúsculo e sem espaços extras (início e fim)

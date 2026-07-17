@@ -12,9 +12,16 @@
 
 <hr>
 
-<h2>{{ $weather['city'] }}</h2>  <!-- exibe o return do parâmetro weather de WeatherController.php !-->
+@if(isset($error) && $error)
+    <div style="color: red; background: #fee2e2; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        {{ $error }}
+    </div>
+@endif
 
-<p>País: {{$weather['country'] }}</p>
-<p>Temperatura: {{$weather['temperature'] }} ºC</p>
-<p>Umidade: {{$weather['humidity'] }} %</p>
-<p>Vento: {{$weather['wind'] }} km/h</p>
+@if(isset($weather) && $weather)
+    <h2>{{ $weather['city'] }}</h2>
+    <p>País: {{ $weather['country'] }}</p>
+    <p>Temperatura: {{ $weather['temperature'] }} ºC</p>
+    <p>Umidade: {{ $weather['humidity'] }} %</p>
+    <p>Vento: {{ $weather['wind'] }} km/h</p>
+@endif

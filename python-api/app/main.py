@@ -1,9 +1,24 @@
-from fastapi import FastAPI, HTTPException # fastAPI -> cria a API; HTTPException -> retorna os erros HTTP de forma limpa
+from fastapi import FastAPI, HTTPException, Request # fastAPI -> cria a API; HTTPException -> retorna os erros HTTP de forma limpa
+
+from fastapi.responses import JSONResponse # resposta http no formato json
+
 from .services.weather_service import WeatherService # importa dentro da pasta services o weather_service.py
 
-from app.models.weather_response import WeatherResponse
+from app.models.weather_response import WeatherResponse # Formato de Dados (DTO - Data Transfer Object)
 
-from .gateways.weather_gateway import WeatherGateway
+from .gateways.weather_gateway import WeatherGateway  # comunicação externa
+
+from app.exceptions.city_not_found import CityNotFoundException # tratamento de erros
+from app.exceptions.external_api import ExternalApiException
+
+import logging # Importa a biblioteca nativa de logs do Python
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI() # cria a instância app (que mostra pro server quais rotas existem)
 # instância é um objeto criado a partir de uma classe (molde de atributos e métodos)
@@ -11,6 +26,43 @@ app = FastAPI() # cria a instância app (que mostra pro server quais rotas exist
 gateway = WeatherGateway()
 service = WeatherService(gateway=gateway)
 
+
+@app.exception_handler(
+     CityNotFoundException
+)
+async def city_not_found_handler(
+    request: Request,
+    exc: CityNotFoundException
+):
+    logger.warning(f"Busca de cidade falhou: {str(exc)}") # REGISTRA UM AVISO NO LOG: Útil para monitorar quais cidades as pessoas buscam e não existem
+    return JSONResponse(
+        status_code=404,
+        content={
+            "error": {
+                "code": "CITY_NOT_FOUND",
+                "message": str(exc)
+            }
+        }
+    )
+
+@app.exception_handler(
+    ExternalApiException
+)
+
+async def external_api_handler(
+    request: Request,
+    exc: ExternalApiException
+):
+    logger.error(f"Erro ao consultar o provedor Open-Meteo externo: {str(exc)}") # REGISTRA UM ERRO GRAVE NO LOG: Alerta o administrador do sistema que o Open-Meteo caiu ou falhou
+    return JSONResponse(
+        status_code=502,
+        content={
+            "error": {
+                "code": "WEATHER_PROVIDER_ERROR",
+                "message": str(exc)
+            }
+        }
+    )
 
 @app.get( # @ -> decorador -> use a função abaixo a partir das funcionalidades de app 
         "/weather",
@@ -27,7 +79,8 @@ def weather(city: str) -> WeatherResponse:
     # "->" Type Hinting (Indicação de Tipo) de retorno 
     try:
         return service.get_weather(city) # tente retornar algo da api a partir do serviço get_weather que vem da função WeatherService
-    
+    except (CityNotFoundException, ExternalApiException):
+        raise
     except Exception as e: # se não for possível, levantar a exceção, guardá-la como "e"
         raise HTTPException(
             status_code=404,

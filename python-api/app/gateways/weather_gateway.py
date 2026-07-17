@@ -1,5 +1,9 @@
 import requests # permite acessar sites e APIs (fazer requests)
+
 from app.models.weather_response import WeatherResponse # modelo WeatherResponse
+
+from app.exceptions.city_not_found import CityNotFoundException # tratamento de erros
+from app.exceptions.external_api import ExternalApiException
 
 class WeatherGateway:
     GEO_URL = "https://geocoding-api.open-meteo.com/v1/search" # coordenadas
@@ -7,16 +11,25 @@ class WeatherGateway:
     # link sobre a api: https://open-meteo.com/en/docs
 
     def get_weather(self, city:str) -> WeatherResponse:
-        geo = requests.get(
-            self.GEO_URL, # self - encontra a var global GEO_URL
-            params={
-                "name": city,
-                "count": 1 # devolve o primeiro resultado
-            }
-        )
+        try:
+            geo = requests.get(
+                self.GEO_URL, # self - encontra a var global GEO_URL
+                params={
+                    "name": city,
+                    "count": 1 # devolve o primeiro resultado
+                }
+            )
 
-        geo.raise_for_status() # método para verificar status da api geo
+            geo.raise_for_status() # método para verificar status da api geo
 
+        except requests.RequestException:
+                raise ExternalApiException()
+        
+        data = geo.json()
+
+        if "results" not in data:
+             raise CityNotFoundException(city)
+    
         place = geo.json()["results"][0] # guarda o resultado 1, uma array na var place
 
         weather = requests.get( # busca o clima a partir das coordenadas

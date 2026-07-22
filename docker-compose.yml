@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7 # baixa a imagem oficial do redis:7 da internet / servidor do Redis versão 7 instalado e configurado
+    ports:
+      - "6379:6379" # libera a porta 6379 para a API enviar e ler dados de cache do Redis
+
+# docker compose up -d -> faz o docker ler este arquivo e cria um contâiner (ambiente para rodar o servidor redis)
+
+# A flag -d (detached mode) faz tudo isso rodar em segundo plano, deixando o seu terminal livre para outros comandos.

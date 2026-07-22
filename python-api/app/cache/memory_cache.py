@@ -1,6 +1,8 @@
 from time import time # biblioteca nativa - horário exato
 
-class MemoryCache:
+from app.cache.contracts.cache import Cache
+
+class MemoryCache(Cache):
     def __init__(self): # construtor da classe. 
         # Dunder (Double Underline) indica que será executado automaticamente toda vez que a classe MemoryCache é chamada
         # inicializa/cria o objeto

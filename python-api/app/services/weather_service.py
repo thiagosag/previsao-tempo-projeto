@@ -8,11 +8,11 @@ from app.config import CACHE_TTL # varíavel que guarda os 600 segundos em confi
 from app.gateways.open_meteo_gateway import WeatherGateway
 
 
-class WeatherService:
+class WeatherService: # algo genérico que guarda atributos e funções 
     
-    def __init__(self, gateway: WeatherGateway):
+    def __init__(self, gateway, cache):
         self.gateway = gateway
-        self.cache = MemoryCache()
+        self.cache = cache
 
     def get_weather(self, city) -> WeatherResponse: # self - permite usar as funções da classe/ espera receber
         # -> WeatherResponse: a seguir serão utilizadas os tipos declarados em WeatherResponse.

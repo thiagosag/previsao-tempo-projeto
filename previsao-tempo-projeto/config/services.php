@@ -13,6 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'python_api' => [
+    'url' => env('PYTHON_API_URL', 'http://127.0.0.1:8001'),
+    ],
 
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),

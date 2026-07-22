@@ -71,6 +71,7 @@ O desenvolvimento será dividido nos respectivos ciclos:
 
 9 - Cache Distribuído com Redis: Arquitetura distribuída com Docker, RedisCache, abstração via contrato (Protocol) e drivers por .env.
 
+10 - Interface Blade, Validação e Padrões Laravel: Form Requests, API Resources, tratamento de exceções HTTP e Dashboard responsivo com Tailwind CSS.
 ---
 
 ## Como Rodar o Projeto

@@ -29,6 +29,7 @@ app = FastAPI() # cria a instância app (que mostra pro server quais rotas exist
      CityNotFoundException
 )
 async def city_not_found_handler(
+    request: Request,
     exc: CityNotFoundException
 ):
     logger.warning(f"Busca de cidade falhou: {str(exc)}") # REGISTRA UM AVISO NO LOG: Útil para monitorar quais cidades as pessoas buscam e não existem
@@ -45,6 +46,7 @@ async def city_not_found_handler(
 )
 
 async def external_api_handler(
+    request: Request,
     exc: ExternalApiException
 ):
     logger.error(f"Erro ao consultar o provedor Open-Meteo externo: {str(exc)}") # REGISTRA UM ERRO GRAVE NO LOG: Alerta o administrador do sistema que o Open-Meteo caiu ou falhou

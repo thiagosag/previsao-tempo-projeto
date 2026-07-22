@@ -72,6 +72,25 @@ O desenvolvimento será dividido nos respectivos ciclos:
 9 - Cache Distribuído com Redis: Arquitetura distribuída com Docker, RedisCache, abstração via contrato (Protocol) e drivers por .env.
 
 10 - Interface Blade, Validação e Padrões Laravel: Form Requests, API Resources, tratamento de exceções HTTP e Dashboard responsivo com Tailwind CSS.
+
+---
+
+## Demonstração da Aplicação
+
+### 1. Tela Inicial (`/weather`)
+Esta é a interface principal do sistema antes de qualquer busca, pronta para receber a cidade digitada pelo usuário.
+
+![Tela Inicial](./assets/dashboard-vazio.png)
+> *A página carrega o formulário limpo utilizando estilização com Tailwind CSS.*
+
+---
+
+### 2. Consulta Realizada (Exemplo: São Paulo)
+Quando o usuário digita "São Paulo" e envia o formulário, o Laravel realiza a requisição para a API em Python.
+
+![Previsão para São Paulo](./assets/dashboard-resultado.png)
+> *A API consulta o serviço de tempo, salva a resposta no cache do Redis e devolve os dados organizados no Dashboard.*
+
 ---
 
 ## Como Rodar o Projeto
@@ -116,6 +135,7 @@ O desenvolvimento será dividido nos respectivos ciclos:
 # 2. Instale as dependências e limpe as configurações em cache
 ```
 composer install
+cp .env.example .env
 php artisan key:generate
 php artisan config:clear
 ```

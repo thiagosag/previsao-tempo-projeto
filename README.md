@@ -92,63 +92,109 @@ Quando o usuário digita "São Paulo" e envia o formulário, o Laravel realiza a
 > *A API consulta o serviço de tempo, salva a resposta no cache do Redis e devolve os dados organizados no Dashboard.*
 
 ---
+# Como Rodar o Projeto
 
-## Como Rodar o Projeto
+## Pré-requisitos
 
-### Pré-requisitos
-- PHP >= 8.2 & Composer
+Antes de começar, certifique-se de ter instalado:
+
+- PHP **8.2** ou superior
+- Composer
 - XAMPP (Apache e MySQL)
-- Python >= 3.10
-- Docker & Docker Desktop
+- Python **3.10** ou superior
+- Docker e Docker Desktop
 
 ---
 
-### 1. Banco de Dados (XAMPP)
-1. Abra o XAMPP Control Panel.
-2. Inicie os serviços do **Apache** e **MySQL**.
-3. Certifique-se de que o banco de dados especificado no `.env` do Laravel está criado.
+## 1. Configurar o Banco de Dados (XAMPP)
+
+1. Abra o **XAMPP Control Panel**.
+2. Inicie os serviços **Apache** e **MySQL**.
+3. Crie o banco de dados configurado no arquivo `.env` do projeto Laravel.
 
 ---
 
-### 2. Infraestrutura (Redis via Docker)
-# Subir o container do Redis em segundo plano (porta 6379)
-`docker compose up -d`
+## 2. Iniciar o Redis (Docker)
 
----
+Na raiz do projeto, execute:
 
-### 3. Backend Python (FastAPI)
-# 1. Acesse a pasta da API Python
-`cd python-api`
-
-# 2. Instale as dependências
-`pip install fastapi uvicorn requests redis pydantic pytest`
-
-# 3. Inicie o servidor da API na porta 8001
-`uvicorn app.main:app --reload --port 8001`
-
----
-
-### 4. Frontend & Consumo (Laravel)
-# 1. Acesse a pasta do projeto Laravel
-`cd previsao-tempo-projeto/previsao-tempo-projeto`
-
-# 2. Instale as dependências e limpe as configurações em cache
+```bash
+docker compose up -d
 ```
+
+Isso iniciará o container do Redis na porta **6379**.
+
+---
+
+## 3. Executar a API Python (FastAPI)
+
+Acesse a pasta da API:
+
+```bash
+cd python-api
+```
+
+Instale as dependências:
+
+```bash
+pip install fastapi uvicorn requests redis pydantic pytest
+```
+
+Inicie o servidor:
+
+```bash
+uvicorn app.main:app --reload --port 8001
+```
+
+A API ficará disponível em:
+
+```
+http://localhost:8001
+```
+
+---
+
+## 4. Executar o Projeto Laravel
+
+Acesse a pasta do projeto:
+
+```bash
+cd previsao-tempo-projeto/previsao-tempo-projeto
+```
+
+Instale as dependências e configure o ambiente:
+
+```bash
 composer install
 cp .env.example .env
 php artisan key:generate
 php artisan config:clear
 ```
 
-# 3. Inicie o servidor de desenvolvimento na porta 8000
-`php artisan serve`
+Inicie o servidor:
+
+```bash
+php artisan serve
+```
+
+O Laravel ficará disponível em:
+
+```
+http://localhost:8000
+```
 
 ---
 
-### Testes Automatizados (Python)
-# Dentro da pasta 'python-api', execute a suíte de testes unitários:
-`python -m pytest`
+## Testes Automatizados
+
+Dentro da pasta `python-api`, execute:
+
+```bash
+python -m pytest
+```
+
+---
 
 ## Licença
 
-Projeto desenvolvido para fins de estudo.
+Este projeto foi desenvolvido para fins de estudo.
